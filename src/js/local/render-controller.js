@@ -1,4 +1,5 @@
 (function() {
+    'use strict';
 
     var camera, scene, renderer,
         container, stats, particle,
@@ -6,11 +7,16 @@
         height, width, fieldOfView,
         aspectRatio, nearPlane, farPlane,
         body, cameraZ, material,
-        i = 0, count = 0,
-        dblPI = Math.PI * 2,
-        mouseX = 0, mouseY = 0,
-        amtX = 50, amtY = 50,
-        sep = 100, spriteOpts = {}, particles = [],
+        i = 0,
+        count = 0,
+        Tau = Math.PI * 2,
+        mouseX = 0,
+        mouseY = 0,
+        amtX = 50,
+        amtY = 50,
+        sep = 100,
+        spriteOpts = {},
+        particles = [],
         cssString = 'margin: 0; overflow: hidden;';
 
     function onDocumentReady() {
@@ -28,7 +34,7 @@
         aspectRatio = width / height;
         nearPlane = 1;
         farPlane = 10000;
-        cameraZ = 1000;
+        cameraZ = 750;
 
         rendererer(onRendererRenderered);
     }
@@ -39,7 +45,8 @@
         camera = new THREE.PerspectiveCamera(fieldOfView, aspectRatio, nearPlane, farPlane);
         camera.position.z = cameraZ;
 
-        //build us a scene!
+        // aaaaaaaaand scene! (No wait, we're not done!)
+        // aaaaaaaaand ten more minutes.
         scene = new THREE.Scene();
 
         //material settings
@@ -47,15 +54,15 @@
             color: 0xffffff,
             program: function(ctx) {
                 ctx.beginPath();
-                ctx.arc(0, 0, 0.5, 0, dblPI, true);
+                ctx.arc(0, 0, 0.5, 0, Tau, true);
                 ctx.fill();
             }
         };
 
         material = new THREE.SpriteCanvasMaterial(spriteOpts);
 
-        //render dem particles
-        for (var ix= 0, lx = amtX; ix < lx; ix++) {
+        // Stop! particle time!
+        for (var ix = 0, lx = amtX; ix < lx; ix++) {
 
             for (var iy = 0, ly = amtY; iy < ly; iy++) {
                 particle = particles[i++] = new THREE.Sprite(material);
@@ -74,12 +81,14 @@
         // append the rendered scene to the container
         container.appendChild(renderer.domElement);
 
+        // aaaaaaaaand Scene? (yes, scene!)
         if (complete) {
             complete();
         }
     }
 
     function onRendererRenderered() {
+        // stats stats stats stats stats stats stats, eeeeerrryyybooodddaay! - Lil Jon, probably.
         stats = new Stats();
         stats.domElement.style.position = 'absolute';
         stats.domElement.style.top = stats.domElement.style.left = '0';
@@ -134,11 +143,12 @@
     }
 
     function update() {
-        camera.position.x += (mouseX - camera.position.x) * 0.25;
-        camera.position.y += (mouseY - camera.position.y) * 0.5;
+        camera.position.x += (mouseX - camera.position.x) * 0.05;
+        camera.position.y += (mouseY - camera.position.y) * 0.05;
+        camera.lookAt(scene.position);
 
         i = 0;
-        for (var ix= 0, lx = amtX; ix < lx; ix++) {
+        for (var ix = 0, lx = amtX; ix < lx; ix++) {
 
             for (var iy = 0, ly = amtY; iy < ly; iy++) {
                 particle = particles[i++];
